@@ -3,9 +3,9 @@
 // I guess directly assign result may have overflow issue
 // but I haven't tested that case
 module element_add #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input [0:WIDTH-1][0:WIDTH-1][31:0]a,
-    input [0:WIDTH-1][0:WIDTH-1][31:0]b,
-    output [0:WIDTH-1][0:WIDTH-1][31:0]result
+    input signed [0:WIDTH-1][0:WIDTH-1][31:0]a,
+    input signed [0:WIDTH-1][0:WIDTH-1][31:0]b,
+    output signed [0:WIDTH-1][0:WIDTH-1][31:0]result
 );
     genvar i, j;
     generate
@@ -16,9 +16,9 @@ module element_add #(parameter WIDTH = 2 ** `WIDTH_BIT) (
 endmodule
 
 module element_sub #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input [0:WIDTH-1][0:WIDTH-1][31:0]a,
-    input [0:WIDTH-1][0:WIDTH-1][31:0]b,
-    output [0:WIDTH-1][0:WIDTH-1][31:0]result
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]a,
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]b,
+    output signed[0:WIDTH-1][0:WIDTH-1][31:0]result
 );
     genvar i, j;
     generate
@@ -29,9 +29,9 @@ module element_sub #(parameter WIDTH = 2 ** `WIDTH_BIT) (
 endmodule
 
 module element_mul #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input [0:WIDTH-1][0:WIDTH-1][31:0]a,
-    input [0:WIDTH-1][0:WIDTH-1][31:0]b,
-    output [0:WIDTH-1][0:WIDTH-1][31:0]result
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]a,
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]b,
+    output signed[0:WIDTH-1][0:WIDTH-1][31:0]result
 );
     genvar i, j;
     generate
@@ -42,9 +42,9 @@ module element_mul #(parameter WIDTH = 2 ** `WIDTH_BIT) (
 endmodule
 
 module element_div #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input [0:WIDTH-1][0:WIDTH-1][31:0]a,
-    input [0:WIDTH-1][0:WIDTH-1][31:0]b,
-    output [0:WIDTH-1][0:WIDTH-1][31:0]result
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]a,
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]b,
+    output signed[0:WIDTH-1][0:WIDTH-1][31:0]result
 );
     genvar i, j;
     generate
@@ -55,9 +55,9 @@ module element_div #(parameter WIDTH = 2 ** `WIDTH_BIT) (
 endmodule
 
 module element_mod #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input [0:WIDTH-1][0:WIDTH-1][31:0]a,
-    input [0:WIDTH-1][0:WIDTH-1][31:0]b,
-    output [0:WIDTH-1][0:WIDTH-1][31:0]result
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]a,
+    input signed[0:WIDTH-1][0:WIDTH-1][31:0]b,
+    output signed[0:WIDTH-1][0:WIDTH-1][31:0]result
 );
     genvar i, j;
     generate
