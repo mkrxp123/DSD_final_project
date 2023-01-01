@@ -24,7 +24,7 @@ module controller (input St, input done, output reg enable);
 endmodule
 
 module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input CLK, input jump, input St, input RST
+    input CLK, input jump, input St, input RST, output done, output [0:WIDTH-1][0:WIDTH-1][31:0]result
 );
     wire done, enable;
     controller ctrl(St, done, enable);
@@ -60,4 +60,5 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
                                              read1, read2, write, write_data, constant, data1, data2);
 
     ALU #(.WIDTH(WIDTH)) ALU(data1, data2, sel, write_data);
+    assign result = write_data;
 endmodule
