@@ -10,7 +10,7 @@ module decoder (
     output [`INDEX_BIT-1:0]read1,
     output [`INDEX_BIT-1:0]read2,
     output [`INDEX_BIT-1:0]write,
-    output [28-`INDEX_BIT:0]generated_data,
+    output [28-2*`INDEX_BIT:0]generated_data,
     output done
 );
     // instruction set
@@ -19,7 +19,7 @@ module decoder (
     assign PC_src = instruction[31:29] == 3'b110;
     assign jump_addr = instruction[28:29-`INSTR_BIT];
     assign write_enable = instruction[31:30] != 2'b11;
-    assign generated_enable = instruction[28-2*`INDEX_BIT:0] != 0;
+    assign generated_enable = instruction[28-3*`INDEX_BIT:0] != 0;
     assign sel = instruction[31:29];
     assign read1 = instruction[28:29-`INDEX_BIT];
     assign read2 = instruction[28-`INDEX_BIT:29-2*`INDEX_BIT];

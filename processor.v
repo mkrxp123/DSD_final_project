@@ -47,7 +47,7 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     wire [`INDEX_BIT-1:0]read1;
     wire [`INDEX_BIT-1:0]read2;
     wire [`INDEX_BIT-1:0]write;
-    wire [28-`INDEX_BIT:0]generated_data;
+    wire [28-2*`INDEX_BIT:0]generated_data;
     decoder instr_decoder(instruction, PC_src, jump_addr, write_enable & enable, generated_enable,
                           sel, read1, read2, write, generated_data, done);
 
@@ -57,6 +57,6 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     data_memory #(.WIDTH(WIDTH)) data_memory(CLK, RST, write_enable, read1, read2, 
                                              write, write_data, data1, data2);
 
-    wire sencond_data = (generated_enable)? {{(3 + `INDEX_BIT){1'b0}}, generated_data} : data2;
+    wire sencond_data = (generated_enable)? {{(3 + 2 * `INDEX_BIT){1'b0}}, generated_data} : data2;
     ALU #(.WIDTH(WIDTH)) ALU(data1, second_data, sel, write_data);
 endmodule
