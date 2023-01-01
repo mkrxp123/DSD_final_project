@@ -24,6 +24,9 @@ endmodule
 module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     input CLK, input jump, input St, input RST
 );
+    wire done, enable;
+    controller ctrl(St, done, enable);
+
     reg [`INSTR_BIT-1:0] pc;
     initial begin
         pc <= 0;
@@ -32,19 +35,20 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     wire nxt_pc = pc + (`INSTR_BIT-1)'d4;
     wire [`INSTR_BIT-1:0]jump_addr;
     always @(posedge CLK) begin
-        pc <= (PC_src & jump)? nxt_pc : jump_addr;
+        if(enable)
+            pc <= (PC_src & jump)? jump_addr : nxt_pc;
     end
 
     wire [31:0]instruction;
     instr_memory instr_mem(.pc(pc), .instruction(instruction));
 
-    wire write_enable, generated_enable, done;
+    wire write_enable, generated_enable;
     wire [2:0]sel;
     wire [`INDEX_BIT-1:0]read1;
     wire [`INDEX_BIT-1:0]read2;
     wire [`INDEX_BIT-1:0]write;
     wire [28-`INDEX_BIT:0]generated_data;
-    decoder instr_decoder(instruction, PC_src, jump_addr, write_enable, generated_enable,
+    decoder instr_decoder(instruction, PC_src, jump_addr, write_enable & enable, generated_enable,
                           sel, read1, read2, write, generated_data, done);
 
     wire [0:WIDTH-1][0:WIDTH-1][31:0]write_data;
@@ -53,5 +57,6 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     data_memory #(.WIDTH(WIDTH)) data_memory(CLK, RST, write_enable, read1, read2, 
                                              write, write_data, data1, data2);
 
-    
+    wire sencond_data = (generated_enable)? {{(3 + `INDEX_BIT){1'b0}}, generated_data} : data2;
+    ALU #(.WIDTH(WIDTH)) ALU(data1, second_data, sel, write_data);
 endmodule
