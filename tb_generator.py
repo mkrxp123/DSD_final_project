@@ -8,33 +8,36 @@ instructions = []
 INDEX_BIT = 5
 PADDING = '0' * (29 - 3 * INDEX_BIT)
 
-toBinary = lambda index: ''.join([str((index >> i) & 1) for i in range(INDEX_BIT - 1, -1, -1)])
+encode = lambda index, length=INDEX_BIT: ''.join([str((index >> i) & 1) for i in range(length - 1, -1, -1)])
 genData = lambda row, col, bound=(-10, 10): np.random.randint(bound[0], bound[1], size=(row, col), dtype=np.int)
 
-# a, b stand for index in list/data memory
-# dest stand for index of the output location in the list/data memory
-def add(a: int, b: int, dest:int) -> np.ndarray:
-    instructions.append(f'000{toBinary(a)}{toBinary(b)}{toBinary(dest)}{PADDING}')
+'''
+a, b stand for index in list/data memory
+dest stand for index of the output location in the list/data memory
+if constant == 0, then output = operate on mem[a] and mem[b], otherwise operate on mem[a] and constant
+'''
+def add(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
+    instructions.append(f'000{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] + data[b]
 
-def sub(a: int, b: int, dest:int) -> np.ndarray:
-    instructions.append(f'001{toBinary(a)}{toBinary(b)}{toBinary(dest)}{PADDING}')
+def sub(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
+    instructions.append(f'001{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] - data[b]
 
-def mul(a: int, b: int, dest:int) -> np.ndarray:
-    instructions.append(f'010{toBinary(a)}{toBinary(b)}{toBinary(dest)}{PADDING}')
+def mul(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
+    instructions.append(f'010{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] * data[b]
 
-def div(a: int, b: int, dest:int) -> np.ndarray:
-    instructions.append(f'011{toBinary(a)}{toBinary(b)}{toBinary(dest)}{PADDING}')
+def div(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
+    instructions.append(f'011{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] // data[b]
 
-def mod(a: int, b: int, dest:int) -> np.ndarray:
-    instructions.append(f'100{toBinary(a)}{toBinary(b)}{toBinary(dest)}{PADDING}')
+def mod(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
+    instructions.append(f'100{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] % data[b]
 
-def matmul(a: int, b: int, dest:int) -> np.ndarray:
-    instructions.append(f'101{toBinary(a)}{toBinary(b)}{toBinary(dest)}{PADDING}')
+def matmul(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
+    instructions.append(f'101{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] @ data[b]
 
 data.append(genData(3, 4))
