@@ -50,3 +50,4 @@ data.append(mul(0, 3, 4))
 with open("./testbench/instructions.txt", "w") as f:
     for instr in instructions:
         f.write(f'{instr}\n')
+    f.write('1' * 32)   # end command
