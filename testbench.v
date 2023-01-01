@@ -1,5 +1,6 @@
-`include "element_op.v"
+`include "CONSTANT.v"
+`include "processor.v"
 
 module tb ();
-
+    
 endmodule
