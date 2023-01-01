@@ -31,6 +31,7 @@ module ALU #(parameter WIDTH = 2 ** `WIDTH_BIT) (
             3: result <= e_div_r;
             4: result <= e_mod_r;
             5: result <= mul_r;
+            default: result <= 0;
         endcase
     end
 endmodule

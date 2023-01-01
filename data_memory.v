@@ -1,7 +1,7 @@
 `include "CONSTANT.v"
 
-module memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
-    input CLK, input RST, input write_enable, input generated_enable,
+module data_memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
+    input CLK, input RST, input write_enable,
     input [`INDEX_BIT-1:0]read1,
     input [`INDEX_BIT-1:0]read2,
     input [`INDEX_BIT-1:0]write,
@@ -10,7 +10,7 @@ module memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     output [0:WIDTH-1][0:WIDTH-1][31:0]data2
 );
     localparam TOTAL_MATRIXES = 2 ** `INDEX_BIT;
-    reg [0:WIDTH-1][0:WIDTH-1][31:0]mem[0:TOTAL_MATRIXES-1];
+    reg [0:WIDTH-1][0:WIDTH-1][31:0]mem[`INDEX_BIT-1:0];
     initial begin
         for (integer i = 0; i < TOTAL_MATRIXES; i = i + 1) begin
             mem[i] <= 0;
@@ -18,8 +18,8 @@ module memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     end
 
     assign data1 = mem[read1];
-    wire [31:0]gen = {{(32-`INDEX_BIT){1'b0}}, read2};
-    assign data2 = (generated_enable)? {WIDTH*WIDTH{gen}} : mem[read2];
+    // wire [31:0]gen = {{(32-`INDEX_BIT){1'b0}}, read2};
+    assign data2 = mem[read2];
 
     always @(posedge CLK or posedge RST) begin
         if(RST)
