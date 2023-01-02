@@ -4,7 +4,7 @@
 `include "ALU.v"
 
 module instr_memory (input [`INSTR_BIT-1:0]pc, output [31:0]instruction);
-    reg [`INSTR_BIT-1:0][31:0]instr_mem;
+    reg [2**`INSTR_BIT-1:0][31:0]instr_mem;
     reg [31:0]instr;
     integer i = 0, instr_tb, cnt;
     initial begin
@@ -41,7 +41,7 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
         pc <= 0;
     end
     wire PC_src;
-    wire nxt_pc = pc + 1;
+    wire [`INSTR_BIT-1:0]nxt_pc = pc + 1;
     wire [`INSTR_BIT-1:0]jump_addr;
     always @(posedge CLK) begin
         if(enable)
@@ -60,12 +60,28 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     decoder instr_decoder(instruction, PC_src, jump_addr, write_enable, generated_enable,
                           sel, read1, read2, write, constant, done);
 
-    wire [0:WIDTH-1][0:WIDTH-1][31:0]write_data;
-    wire [0:WIDTH-1][0:WIDTH-1][31:0]data1;
-    wire [0:WIDTH-1][0:WIDTH-1][31:0]data2;
+    wire signed[0:WIDTH-1][0:WIDTH-1][31:0]write_data;
+    wire signed[0:WIDTH-1][0:WIDTH-1][31:0]data1;
+    wire signed[0:WIDTH-1][0:WIDTH-1][31:0]data2;
     data_memory #(.WIDTH(WIDTH)) data_memory(CLK, RST, write_enable & enable, generated_enable, 
                                              read1, read2, write, write_data, constant, data1, data2);
 
     ALU #(.WIDTH(WIDTH)) ALU(data1, data2, sel, write_data);
+    always@(negedge CLK)begin
+        $display("op: %3b", sel);
+        $display("data1:");
+        $display("%5d %5d %5d %5d", $time, data1[0][0], data1[0][1], data1[0][2], data1[0][3]);
+        $display("%5d %5d %5d %5d", $time, data1[1][0], data1[1][1], data1[1][2], data1[1][3]);
+        $display("%5d %5d %5d %5d", $time, data1[2][0], data1[2][1], data1[2][2], data1[2][3]);
+        $display("%5d %5d %5d %5d", $time, data1[3][0], data1[3][1], data1[3][2], data1[3][3]);
+        $display();
+        $display("data2:");
+        $display("%5d %5d %5d %5d", $time, data2[0][0], data2[0][1], data2[0][2], data2[0][3]);
+        $display("%5d %5d %5d %5d", $time, data2[1][0], data2[1][1], data2[1][2], data2[1][3]);
+        $display("%5d %5d %5d %5d", $time, data2[2][0], data2[2][1], data2[2][2], data2[2][3]);
+        $display("%5d %5d %5d %5d", $time, data2[3][0], data2[3][1], data2[3][2], data2[3][3]);
+        $display();
+    end
+    
     assign result = write_data;
 endmodule

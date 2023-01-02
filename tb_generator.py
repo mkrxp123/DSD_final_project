@@ -1,12 +1,20 @@
 from pathlib import Path
 import numpy as np
+import random
 
 Path("./testbench").mkdir(parents=True, exist_ok=True)
 
 data = []
+ans = []
 instructions = []
+WIDTH_BIT = 3
 INDEX_BIT = 5
 PADDING = '0' * (29 - 3 * INDEX_BIT)
+
+row_size = 3
+col_size = 4
+data_size = pow(2, INDEX_BIT-1)
+instr_size = pow(2, INDEX_BIT-1)
 
 encode = lambda index, length=INDEX_BIT: ''.join([str((index >> i) & 1) for i in range(length - 1, -1, -1)])
 genData = lambda row, col, bound=(-10, 10): np.random.randint(bound[0], bound[1], size=(row, col), dtype=np.int)
@@ -40,14 +48,60 @@ def matmul(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
     instructions.append(f'101{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
     return data[a] @ data[b]
 
-data.append(genData(3, 4))
-data.append(genData(3, 4))
-data.append(genData(3, 4))
 
-data.append(add(0, 1, 3))
-data.append(mul(0, 3, 4))
+
+
+for _ in range(data_size):
+    data.append(np.pad(genData(row_size, col_size), ((0, pow(2, WIDTH_BIT)-row_size), (0, pow(2, WIDTH_BIT)-col_size)), "constant", constant_values=(0, 0)))
+
+
+
+    
+for i in range(instr_size):
+    op = random.randint(0,5)
+    match op:
+        case 0:
+            ans.append(add(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+        case 1:
+            ans.append(sub(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+        case 2:
+            ans.append(mul(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+        case 3:
+            ans.append(div(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+        case 4:
+            ans.append(mod(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+        case 5:
+            ans.append(matmul(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+        
+        
 
 with open("./testbench/instructions.txt", "w") as f:
     for instr in instructions:
         f.write(f'{instr}\n')
-    f.write('1' * 32)   # end command
+    f.write('1' * 32)   # end command              
+
+with open("./testbench/data.txt", "w") as data_f:
+    for d in data:
+        s = ""
+        for row in d:
+            for value in row:
+                s += encode(value, 32)
+        print(s)
+        data_f.write(s)
+        data_f.write('\n')
+with open("./testbench/ans.txt", "w") as ans_f:
+    for a in ans:
+        s = ""
+        for row in a:
+            for value in row:
+                s += encode(value, 32)
+        print(s)
+        ans_f.write(s)
+        ans_f.write('\n')
+
+for d in data:
+    print(d)
+
+for i in range(len(ans)):
+    print(f"ans{i}")
+    print(ans[i])

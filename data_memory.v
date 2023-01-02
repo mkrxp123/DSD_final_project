@@ -11,9 +11,18 @@ module data_memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     output [0:WIDTH-1][0:WIDTH-1][31:0]data2
 );
     localparam TOTAL_MATRIXES = 2 ** `INDEX_BIT;
-    reg [`INDEX_BIT-1:0][0:WIDTH-1][0:WIDTH-1][31:0]mem;
+    reg [2 ** `INDEX_BIT - 1:0][0:WIDTH-1][0:WIDTH-1][31:0] mem;
+    reg [0:WIDTH-1][0:WIDTH-1][31:0] data;
+    integer n = 0, data_tb, cnt;
     initial begin
         mem = 0;
+        data_tb = $fopen("testbench/data.txt", "r");
+        while (! $feof(data_tb)) begin
+            cnt = $fscanf(data_tb, "%b", data);
+            mem[n] = data;
+            n = n + 1;
+        end
+        $fclose(data_tb);
     end
 
     assign data1 = mem[read1];
