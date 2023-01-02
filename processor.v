@@ -4,11 +4,18 @@
 `include "ALU.v"
 
 module instr_memory (input [`INSTR_BIT-1:0]pc, output [31:0]instruction);
-    reg [31:0]instr_mem[`INSTR_BIT-1:0];
+    reg [`INSTR_BIT-1:0][31:0]instr_mem;
+    reg [31:0]instr;
+    integer i = 0, instr_tb, cnt;
     initial begin
-        for (integer i = 0; i < 2 ** `INSTR_BIT; i = i + 1) begin
-            instr_mem[i] <= 0;
+        instr_mem = 0;
+        instr_tb = $fopen("testbench/instructions.txt", "r");
+        while (! $feof(instr_tb)) begin
+            cnt = $fscanf(instr_tb, "%b", instr);
+            instr_mem[i] = instr;
+            i = i + 1;
         end
+        $fclose(instr_tb);
     end
     assign instruction = instr_mem[pc];
 endmodule

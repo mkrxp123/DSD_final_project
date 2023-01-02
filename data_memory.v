@@ -11,11 +11,9 @@ module data_memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     output [0:WIDTH-1][0:WIDTH-1][31:0]data2
 );
     localparam TOTAL_MATRIXES = 2 ** `INDEX_BIT;
-    reg [0:WIDTH-1][0:WIDTH-1][31:0]mem[`INDEX_BIT-1:0];
+    reg [`INDEX_BIT-1:0][0:WIDTH-1][0:WIDTH-1][31:0]mem;
     initial begin
-        for (integer i = 0; i < TOTAL_MATRIXES; i = i + 1) begin
-            mem[i] <= 0;
-        end
+        mem = 0;
     end
 
     assign data1 = mem[read1];
@@ -31,10 +29,7 @@ module data_memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     assign data2 = (generate_enable)? constant_matrix : mem[read2];
 
     always @(posedge CLK or posedge RST) begin
-        if(RST)
-            for (integer i = 0; i < TOTAL_MATRIXES; i = i + 1) begin
-                mem[i] <= 0;
-            end
+        if(RST) mem = 0;
         else if(write_enable)   mem[write] <= write_data;
     end
 endmodule
