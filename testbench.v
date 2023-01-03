@@ -26,7 +26,7 @@ module tb ();
         St = 1;
         @(posedge CLK)
         St = 0;
-        #200;
+        #310;
         $finish;
     end
 
@@ -41,21 +41,28 @@ module tb ();
         $fclose(ans_tb);
     end
     initial begin
-        for(i = 0; i<10; i = i+1)begin
+        for(i = 0; i < 2 ** (`INDEX_BIT-1); i = i+1)begin
             @(negedge CLK)
             #1
             $display("ans:");
-            $display("%5d %5d %5d %5d", $time, ans[i][0][0], ans[i][0][1], ans[i][0][2], ans[i][0][3]);
-            $display("%5d %5d %5d %5d", $time, ans[i][1][0], ans[i][1][1], ans[i][1][2], ans[i][1][3]);
-            $display("%5d %5d %5d %5d", $time, ans[i][2][0], ans[i][2][1], ans[i][2][2], ans[i][2][3]);
-            $display("%5d %5d %5d %5d", $time, ans[i][3][0], ans[i][3][1], ans[i][3][2], ans[i][3][3]);
+            $display("%6d %6d %6d %6d", ans[i][0][0], ans[i][0][1], ans[i][0][2], ans[i][0][3]);
+            $display("%6d %6d %6d %6d", ans[i][1][0], ans[i][1][1], ans[i][1][2], ans[i][1][3]);
+            $display("%6d %6d %6d %6d", ans[i][2][0], ans[i][2][1], ans[i][2][2], ans[i][2][3]);
+            $display("%6d %6d %6d %6d", ans[i][3][0], ans[i][3][1], ans[i][3][2], ans[i][3][3]);
             $display();
             $display("result:");
-            $display("%5d %5d %5d %5d", $time, result[0][0], result[0][1], result[0][2], result[0][3]);
-            $display("%5d %5d %5d %5d", $time, result[1][0], result[1][1], result[1][2], result[1][3]);
-            $display("%5d %5d %5d %5d", $time, result[2][0], result[2][1], result[2][2], result[2][3]);
-            $display("%5d %5d %5d %5d", $time, result[3][0], result[3][1], result[3][2], result[3][3]);
+            $display("%6d %6d %6d %6d", result[0][0], result[0][1], result[0][2], result[0][3]);
+            $display("%6d %6d %6d %6d", result[1][0], result[1][1], result[1][2], result[1][3]);
+            $display("%6d %6d %6d %6d", result[2][0], result[2][1], result[2][2], result[2][3]);
+            $display("%6d %6d %6d %6d", result[3][0], result[3][1], result[3][2], result[3][3]);
             $display();
+            if(result == ans[i]) begin
+                $display("instruction %3d is correct", i);
+            end
+            else
+            begin
+                $display("instruction %3d is wrong", i);
+            end
         end
     end
     

@@ -56,7 +56,7 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     wire [`INDEX_BIT-1:0]read1;
     wire [`INDEX_BIT-1:0]read2;
     wire [`INDEX_BIT-1:0]write;
-    wire [28-2*`INDEX_BIT:0]constant;
+    wire [28-3*`INDEX_BIT:0]constant;
     decoder instr_decoder(instruction, PC_src, jump_addr, write_enable, generated_enable,
                           sel, read1, read2, write, constant, done);
 
@@ -68,19 +68,22 @@ module processor #(parameter WIDTH = 2 ** `WIDTH_BIT) (
 
     ALU #(.WIDTH(WIDTH)) ALU(data1, data2, sel, write_data);
     always@(negedge CLK)begin
-        $display("op: %3b", sel);
-        $display("data1:");
-        $display("%5d %5d %5d %5d", $time, data1[0][0], data1[0][1], data1[0][2], data1[0][3]);
-        $display("%5d %5d %5d %5d", $time, data1[1][0], data1[1][1], data1[1][2], data1[1][3]);
-        $display("%5d %5d %5d %5d", $time, data1[2][0], data1[2][1], data1[2][2], data1[2][3]);
-        $display("%5d %5d %5d %5d", $time, data1[3][0], data1[3][1], data1[3][2], data1[3][3]);
-        $display();
-        $display("data2:");
-        $display("%5d %5d %5d %5d", $time, data2[0][0], data2[0][1], data2[0][2], data2[0][3]);
-        $display("%5d %5d %5d %5d", $time, data2[1][0], data2[1][1], data2[1][2], data2[1][3]);
-        $display("%5d %5d %5d %5d", $time, data2[2][0], data2[2][1], data2[2][2], data2[2][3]);
-        $display("%5d %5d %5d %5d", $time, data2[3][0], data2[3][1], data2[3][2], data2[3][3]);
-        $display();
+        if(sel >= 0 & sel <= 7)
+        begin
+            $display("op: %3b time: %5d", sel, $time);
+            $display("data1:");
+            $display("%6d %6d %6d %6d", data1[0][0], data1[0][1], data1[0][2], data1[0][3]);
+            $display("%6d %6d %6d %6d", data1[1][0], data1[1][1], data1[1][2], data1[1][3]);
+            $display("%6d %6d %6d %6d", data1[2][0], data1[2][1], data1[2][2], data1[2][3]);
+            $display("%6d %6d %6d %6d", data1[3][0], data1[3][1], data1[3][2], data1[3][3]);
+            $display();
+            $display("data2:");
+            $display("%6d %6d %6d %6d", data2[0][0], data2[0][1], data2[0][2], data2[0][3]);
+            $display("%6d %6d %6d %6d", data2[1][0], data2[1][1], data2[1][2], data2[1][3]);
+            $display("%6d %6d %6d %6d", data2[2][0], data2[2][1], data2[2][2], data2[2][3]);
+            $display("%6d %6d %6d %6d", data2[3][0], data2[3][1], data2[3][2], data2[3][3]);
+            $display();
+        end
     end
     
     assign result = write_data;

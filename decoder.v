@@ -10,7 +10,7 @@ module decoder (
     output [`INDEX_BIT-1:0]read1,
     output [`INDEX_BIT-1:0]read2,
     output [`INDEX_BIT-1:0]write,
-    output [28-2*`INDEX_BIT:0]constant,
+    output [28-3*`INDEX_BIT:0]constant,
     output done
 );
     // instruction set
@@ -24,6 +24,6 @@ module decoder (
     assign read1 = instruction[28:29-`INDEX_BIT];
     assign read2 = instruction[28-`INDEX_BIT:29-2*`INDEX_BIT];
     assign write = instruction[28-2*`INDEX_BIT:29-3*`INDEX_BIT];
-    assign constant = instruction[28-`INDEX_BIT:0];
+    assign constant = instruction[28-3*`INDEX_BIT:0];
     assign done = instruction[31:29] == 3'b111;
 endmodule
