@@ -38,11 +38,11 @@ def mul(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
 
 def div(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
     instructions.append(f'011{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
-    return data[a] // data[b]
+    return np.sign(data[a] * data[b])*(abs(data[a]) // abs(data[b]))
 
 def mod(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
     instructions.append(f'100{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
-    return data[a] % data[b]
+    return np.sign(data[a])*(abs(data[a]) % abs(data[b]))
 
 def matmul(a: int, b: int, dest:int, constant: int = 0) -> np.ndarray:
     instructions.append(f'101{encode(a)}{encode(b)}{encode(dest)}{encode(constant, 29 - 3 * INDEX_BIT)}')
