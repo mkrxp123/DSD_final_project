@@ -56,22 +56,11 @@ for _ in range(data_size):
 
 
 
-    
+op = {0: add, 1: sub, 2: mul, 3: div, 4: mod, 5: matmul}
 for i in range(instr_size):
-    op = random.randint(0,5)
-    match op:
-        case 0:
-            ans.append(add(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
-        case 1:
-            ans.append(sub(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
-        case 2:
-            ans.append(mul(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
-        case 3:
-            ans.append(div(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
-        case 4:
-            ans.append(mod(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
-        case 5:
-            ans.append(matmul(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
+    sel = random.randint(0,5)
+    func = op[sel]
+    ans.append(func(random.randint(0,data_size-1), random.randint(0,data_size-1), data_size+i))
         
         
 
