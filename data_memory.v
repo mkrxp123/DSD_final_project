@@ -6,12 +6,12 @@ module data_memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
     input [`INDEX_BIT-1:0]read2,
     input [`INDEX_BIT-1:0]write,
     input [0:WIDTH-1][0:WIDTH-1][31:0]write_data,
-    input [28-2*`INDEX_BIT:0]constant,
+    input [28-3*`INDEX_BIT:0]constant,
     output [0:WIDTH-1][0:WIDTH-1][31:0]data1,
     output [0:WIDTH-1][0:WIDTH-1][31:0]data2
 );
     localparam TOTAL_MATRIXES = 2 ** `INDEX_BIT;
-    reg [2 ** `INDEX_BIT - 1:0][0:WIDTH-1][0:WIDTH-1][31:0] mem;
+    reg [2**`INDEX_BIT-1:0][0:WIDTH-1][0:WIDTH-1][31:0] mem;
     reg [0:WIDTH-1][0:WIDTH-1][31:0] data;
     integer n = 0, data_tb, cnt;
     initial begin
@@ -27,7 +27,7 @@ module data_memory #(parameter WIDTH = 2 ** `WIDTH_BIT) (
 
     assign data1 = mem[read1];
 
-    wire padded_constant = {{(3 + 2 * `INDEX_BIT){1'b0}}, constant};
+    wire [31:0]padded_constant = {{(3 + 3 * `INDEX_BIT){1'b0}}, constant};
     wire [0:WIDTH-1][0:WIDTH-1][31:0]constant_matrix;
     genvar i, j;
     generate
